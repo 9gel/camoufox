@@ -722,6 +722,19 @@ def camoufox_path(download_if_missing: bool = True) -> Path:
     """
     Full path to the active camoufox folder
     """
+    # Pair with CAMOUFOX_EXECUTABLE_PATH: lets a system packager point
+    # the library at a pre-extracted dist tree (containing camoufox.cfg,
+    # fonts/, fontconfig/, etc.) so utils.merge_into_config and the
+    # font setup can read assets without the fetch/install dance.
+    env_dist = os.environ.get("CAMOUFOX_DIST_PATH")
+    if env_dist:
+        env_dist_path = Path(env_dist)
+        if not env_dist_path.exists():
+            raise CamoufoxNotInstalled(
+                f"CAMOUFOX_DIST_PATH points to {env_dist}, which does not exist."
+            )
+        return env_dist_path
+
     from .multiversion import COMPAT_FLAG, get_active_path
 
     # Clean up incompatible old data directory
@@ -774,6 +787,20 @@ def launch_path(browser_path: Optional[Path] = None) -> str:
     """
     Get the path to the camoufox executable
     """
+    # Lets distribution packagers (Nix, Docker, system packages) point
+    # camoufox at a binary they manage themselves, instead of forcing
+    # everyone through `camoufox fetch` and the user-cache install
+    # directory. Honoured only when the caller didn't pass an explicit
+    # browser_path, so per-call overrides still win.
+    if not browser_path:
+        env_path = os.environ.get("CAMOUFOX_EXECUTABLE_PATH")
+        if env_path:
+            if not os.path.exists(env_path):
+                raise CamoufoxNotInstalled(
+                    f"CAMOUFOX_EXECUTABLE_PATH points to {env_path}, which does not exist."
+                )
+            return env_path
+
     if browser_path:
         if OS_NAME == 'mac':
             exec_path = os.path.abspath(
