@@ -63,9 +63,11 @@ buildPythonApplication rec {
   # FHS-wrapped binary, and `get_path("fonts")` resolves into the
   # unpacked dist for fontconfig setup.
   postInstall = ''
-    wrapProgram $out/bin/camoufox \
-      --set-default CAMOUFOX_EXECUTABLE_PATH ${camoufox-bin}/share/camoufox/camoufox-bin \
-      --set-default CAMOUFOX_DIST_PATH ${camoufox-bin.passthru.unpacked}
+    for bin in $out/bin/camoufox $out/bin/camoufox-server; do
+      wrapProgram "$bin" \
+        --set-default CAMOUFOX_EXECUTABLE_PATH ${camoufox-bin}/share/camoufox/camoufox-bin \
+        --set-default CAMOUFOX_DIST_PATH ${camoufox-bin.passthru.unpacked}
+    done
   '';
 
   # Lib pulls in network at import time for version checks otherwise;
@@ -73,7 +75,7 @@ buildPythonApplication rec {
   # verify step instead.
   doCheck = false;
 
-  pythonImportsCheck = [ "camoufox" "camoufox.sync_api" ];
+  pythonImportsCheck = [ "camoufox" "camoufox.sync_api" "camoufox.server_main" ];
 
   passthru = {
     inherit camoufox-bin;

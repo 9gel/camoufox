@@ -53,3 +53,4 @@ gui = ["PySide6"]
 
 [tool.poetry.scripts]
 camoufox = "camoufox.__main__:cli"
+camoufox-server = "camoufox.server_main:main"
