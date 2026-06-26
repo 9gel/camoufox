@@ -99,18 +99,18 @@ let
       freetype
       expat
       libxcb
-      xorg.libX11
-      xorg.libXScrnSaver
-      xorg.libXcomposite
-      xorg.libXcursor
-      xorg.libXdamage
-      xorg.libXext
-      xorg.libXfixes
-      xorg.libXi
-      xorg.libXrandr
-      xorg.libXrender
-      xorg.libXt
-      xorg.libXtst
+      libx11
+      libxscrnsaver
+      libxcomposite
+      libxcursor
+      libxdamage
+      libxext
+      libxfixes
+      libxi
+      libxrandr
+      libxrender
+      libxt
+      libxtst
       # GL / video / audio
       libGL
       libdrm
@@ -131,7 +131,7 @@ let
       zlib
       # Virtual display (Camoufox python lib spawns this for headless='virtual')
       xvfb-run
-      xorg.xorgserver
+      xorgserver
       coreutils
     ];
 
